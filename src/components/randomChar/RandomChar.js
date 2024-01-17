@@ -3,37 +3,38 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 import { fetchCharacter } from '../../slices/characterSlice';
+import ErrorMessage from '../../resources/errorMessage/errorMessage';
+import Spinner from '../../resources/spinner/Spinner';
 
-
-import './randomChar.scss';
-import thor from '../../resources/img/thor.jpeg';
+import './randomChar.scss'
 import mjolnir from '../../resources/img/mjolnir.png';
 
 const RandomChar = () => {
 
+    const dispatch = useDispatch();
+    const character = useSelector((state => state.character.character));
+    const characterLoadingStatus = useSelector((state => state.character.characterLoadingStatus));
+
+    useEffect(() => {
+        dispatch(fetchCharacter())
+    }, [dispatch]);
+
     
 
+    const handleFetchCharacter = () => {
+        dispatch(fetchCharacter());
+    };
 
+    const errorMessage = characterLoadingStatus === "error" ? <ErrorMessage /> : null;
+    const spinner = characterLoadingStatus === "loading" ? <Spinner /> : null;
+    const content = characterLoadingStatus === 'idle' && character ? <View character={character}/> : null;
+ 
 
     return (
         <div className="randomchar">
-            <div className="randomchar__block">
-                <img src={thor} alt="Random character" className="randomchar__img"/>
-                <div className="randomchar__info">
-                    <p className="randomchar__name">Thor</p>
-                    <p className="randomchar__descr">
-                        As the Norse God of thunder and lightning, Thor wields one of the greatest weapons ever made, the enchanted hammer Mjolnir. While others have described Thor as an over-muscled, oafish imbecile, he's quite smart and compassionate...
-                    </p>
-                    <div className="randomchar__btns">
-                        <a href="#" className="button button__main">
-                            <div className="inner">homepage</div>
-                        </a>
-                        <a href="#" className="button button__secondary">
-                            <div className="inner">Wiki</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            {errorMessage}
+            {spinner}
+            {content}
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br/>
@@ -43,12 +44,47 @@ const RandomChar = () => {
                     Or choose another one
                 </p>
                 <button className="button button__main">
-                    <div className="inner">try it</div>
+                    <div className="inner" onClick={handleFetchCharacter}>try it</div>
                 </button>
                 <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
             </div>
         </div>
     )
-}
+};
+
+const View = ({character}) => {
+
+    if (!character) {
+        return null;
+    };
+
+    const {name, description, thumbnail, homepage, wiki} = character;
+
+    
+    let itemStyles = {'objectFit' : 'cover'};
+    if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+        itemStyles = {'objectFit' : 'contain'};
+    };
+
+    return(
+        <div className="randomchar__block">
+            <img src={thumbnail} alt="Random character" className="randomchar__img" style={itemStyles}/>
+                <div className="randomchar__info">
+                    <p className="randomchar__name">{name}</p>
+                    <p className="randomchar__descr">
+                        {description}
+                    </p>
+                <div className="randomchar__btns">
+                    <a href={homepage} className="button button__main">
+                        <div className="inner">homepage</div>
+                    </a>
+                    <a href={wiki} className="button button__secondary">
+                        <div className="inner">wiki</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    )
+};
 
 export default RandomChar;

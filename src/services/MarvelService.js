@@ -1,13 +1,13 @@
 import {useHttp} from '../hooks/requestHook/http.hook';
 
-const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+
+const _apiBase = 'https://gateway.marvel.com:443/v1/public/'; 
 const _apiKey = 'apikey=93dc9b59407c5e263d983f4570eb7621';
 
 const useMarvelService = () => {
     const {request} = useHttp();
 
     
-
     const getCharacter = async (id) => {
         const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
         return _transformCharacter(res.data.results[0]);

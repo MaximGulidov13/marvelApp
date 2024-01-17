@@ -1,3 +1,11 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { fetchCharacter } from '../../slices/characterSlice';
+
+import ErrorMessage from '../../resources/errorMessage/errorMessage';
+import Spinner from '../../resources/spinner/Spinner';
+
 import './charInfo.scss';
 import thor from '../../resources/img/thor.jpeg';
 

@@ -27,7 +27,7 @@ const characterSlice = createSlice({
             .addCase(fetchCharacter.pending, state => {state.characterLoadingStatus = 'loading'})
             .addCase(fetchCharacter.fulfilled, (state, action) => {
                 state.characterLoadingStatus = 'idle';
-                characterAdapter.setOne(state, action.payload)
+                state.character = action.payload
             })
             .addCase(fetchCharacter.rejected, state => {
                 state.characterLoadingStatus = 'error';
